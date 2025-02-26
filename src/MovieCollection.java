@@ -53,33 +53,14 @@ public class MovieCollection
 
     private void processOption(String option)
     {
-        if (option.equals("t"))
-        {
-            searchTitles();
-        }
-        else if (option.equals("c"))
-        {
-            searchCast();
-        }
-        else if (option.equals("k"))
-        {
-            searchKeywords();
-        }
-        else if (option.equals("g"))
-        {
-            listGenres();
-        }
-        else if (option.equals("r"))
-        {
-            listHighestRated();
-        }
-        else if (option.equals("h"))
-        {
-            listHighestRevenue();
-        }
-        else
-        {
-            System.out.println("Invalid choice!");
+        switch (option) {
+            case "t" -> searchTitles();
+            case "c" -> searchCast();
+            case "k" -> searchKeywords();
+            case "g" -> listGenres();
+            case "r" -> listHighestRated();
+            case "h" -> listHighestRevenue();
+            default -> System.out.println("Invalid choice!");
         }
     }
 
@@ -95,15 +76,13 @@ public class MovieCollection
         ArrayList<Movie> results = new ArrayList<>();
 
         // search through ALL movies in collection
-        for (int i = 0; i < movies.size(); i++)
-        {
-            String movieTitle = movies.get(i).getTitle();
+        for (Movie movie : movies) {
+            String movieTitle = movie.getTitle();
             movieTitle = movieTitle.toLowerCase();
 
-            if (movieTitle.contains(searchTerm))
-            {
+            if (movieTitle.contains(searchTerm)) {
                 //add the Movie objest to the results list
-                results.add(movies.get(i));
+                results.add(movie);
             }
         }
 
@@ -181,7 +160,6 @@ public class MovieCollection
         System.out.print("Enter number: ");
 
         int choice = scanner.nextInt();
-        scanner.nextLine();
 
         ArrayList<Movie> results = new ArrayList<>();
         for (Movie movie : movies) {
@@ -224,15 +202,13 @@ public class MovieCollection
         ArrayList<Movie> results = new ArrayList<>();
 
         // search through ALL movies in collection
-        for (int i = 0; i < movies.size(); i++)
-        {
-            String keyword = movies.get(i).getKeywords();
+        for (Movie movie : movies) {
+            String keyword = movie.getKeywords();
             keyword = keyword.toLowerCase();
 
-            if (keyword.contains(searchTerm))
-            {
+            if (keyword.contains(searchTerm)) {
                 //add the Movie object to the results list
-                results.add(movies.get(i));
+                results.add(movie);
             }
         }
 
@@ -287,7 +263,7 @@ public class MovieCollection
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = bufferedReader.readLine();
 
-            movies = new ArrayList<Movie>();
+            movies = new ArrayList<>();
 
             while ((line = bufferedReader.readLine()) != null)
             {
