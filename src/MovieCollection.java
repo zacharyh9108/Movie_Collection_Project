@@ -1,18 +1,22 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class MovieCollection
 {
     private ArrayList<Movie> movies;
     private Scanner scanner;
+    private ArrayList<String> cast;
 
     public MovieCollection(String fileName)
     {
         importMovieList(fileName);
         scanner = new Scanner(System.in);
+        cast = makeCast();
     }
 
     public ArrayList<Movie> getMovies()
@@ -88,7 +92,7 @@ public class MovieCollection
         searchTerm = searchTerm.toLowerCase();
 
         // arraylist to hold search results
-        ArrayList<Movie> results = new ArrayList<Movie>();
+        ArrayList<Movie> results = new ArrayList<>();
 
         // search through ALL movies in collection
         for (int i = 0; i < movies.size(); i++)
@@ -96,7 +100,7 @@ public class MovieCollection
             String movieTitle = movies.get(i).getTitle();
             movieTitle = movieTitle.toLowerCase();
 
-            if (movieTitle.indexOf(searchTerm) != -1)
+            if (movieTitle.contains(searchTerm))
             {
                 //add the Movie objest to the results list
                 results.add(movies.get(i));
@@ -164,25 +168,50 @@ public class MovieCollection
 
     private void searchCast()
     {
-        ArrayList<String> results = new ArrayList<String>();
-
-        for (int i = 0; i < movies.size(); i++)
+        // display them all to the user
+        for (int i = 0; i < cast.size(); i++)
         {
-            String word = movies.get(i).getCast();
+            String word = cast.get(i);
 
-            String[] o = word.split("\\|");
-            for (String lines : o) {
-                if (!results.contains(lines)) {
-                    results.add(lines);
-                }
-            }
-
-            results.add(word);
-            // this will print index 0 as choice 1 in the results list; better for user!
             int choiceNum = i + 1;
 
             System.out.println("" + choiceNum + ". " + word);
         }
+        System.out.println("\nWhich actor would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        ArrayList<Movie> results = new ArrayList<>();
+        for (Movie movie : movies) {
+            if (movie.getCast().contains(cast.get(choice - 1))) {
+                results.add(movie);
+            }
+        }
+        sortResults(results);
+
+        for (int i = 0; i < results.size(); i++)
+        {
+            String word = results.get(i).getTitle();
+
+            int choiceNum = i + 1;
+
+            System.out.println("" + choiceNum + ". " + word);
+        }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.print("Enter number: ");
+
+        choice = scanner.nextInt();
+        scanner.nextLine();
+
+        Movie selectedMovie = results.get(choice - 1);
+
+        displayMovieInfo(selectedMovie);
+
+        System.out.println("\n ** Press Enter to Return to Main Menu **");
+        scanner.nextLine();
     }
 
     private void searchKeywords()
@@ -190,11 +219,9 @@ public class MovieCollection
         System.out.print("Enter a keyword search term: ");
         String searchTerm = scanner.nextLine();
 
-        // prevent case sensitivity
         searchTerm = searchTerm.toLowerCase();
 
-        // arraylist to hold search results
-        ArrayList<Movie> results = new ArrayList<Movie>();
+        ArrayList<Movie> results = new ArrayList<>();
 
         // search through ALL movies in collection
         for (int i = 0; i < movies.size(); i++)
@@ -288,5 +315,19 @@ public class MovieCollection
             // Print out the exception that occurred
             System.out.println("Unable to access " + exception.getMessage());
         }
+    }
+
+    private ArrayList<String> makeCast() {
+        ArrayList<String> c = new ArrayList<>();
+        for (Movie movie : movies) {
+            String[] actors = movie.getCast().split("\\|");
+            for (String actor : actors) {
+                if (!c.contains(actor)) {
+                    c.add(actor);
+                }
+            }
+        }
+        Collections.sort(c);
+        return c;
     }
 }
